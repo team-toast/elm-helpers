@@ -6,6 +6,9 @@ import Eth.Net
 import Eth.Sentry.Tx as TxSentry
 import Eth.Types exposing (Address, HttpProvider, Tx, TxHash, WebsocketProvider)
 import Eth.Utils
+import Json.Decode
+import Json.Encode
+import Result.Extra
 
 
 addressIfNot0x0 : Address -> Maybe Address
@@ -54,3 +57,16 @@ etherscanTxUrl : TxHash -> String
 etherscanTxUrl txHash =
     "https://etherscan.io/tx/"
         ++ Eth.Utils.txHashToString txHash
+
+
+addressDecoder : Json.Decode.Decoder Address
+addressDecoder =
+    Json.Decode.string
+        |> Json.Decode.map Eth.Utils.toAddress
+        |> Json.Decode.andThen
+            (Result.Extra.unpack Json.Decode.fail Json.Decode.succeed)
+
+
+encodeAddress : Address -> Json.Encode.Value
+encodeAddress address =
+    Json.Encode.string (address |> Eth.Utils.addressToString)
