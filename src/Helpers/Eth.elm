@@ -4,7 +4,7 @@ import Array
 import BigInt exposing (BigInt)
 import Eth.Net
 import Eth.Sentry.Tx as TxSentry
-import Eth.Types exposing (Address, HttpProvider, Tx, TxHash, WebsocketProvider)
+import Eth.Types exposing (Address, HttpProvider, Tx, TxHash, WebsocketProvider, Send)
 import Eth.Utils
 import Json.Decode
 import Json.Encode
@@ -70,3 +70,8 @@ addressDecoder =
 encodeAddress : Address -> Json.Encode.Value
 encodeAddress address =
     Json.Encode.string (address |> Eth.Utils.addressToString)
+
+
+addFrom : Address -> Send -> Send
+addFrom fromAddr call =
+    { call | from = Just fromAddr }
